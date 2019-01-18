@@ -259,12 +259,12 @@ MAXIMA_TAR_FILE=$MAXIMA_PKG.tar.gz
 MAXIMA_TAR_PATH=$MCL_LIB_DIR/$MAXIMA_TAR_FILE
 MAXIMA_PATH=$MCL_LIB_DIR/$MAXIMA_PKG
 
-MAXIMA_URL=https://kent.dl.sourceforge.net/project/maxima/Maxima-source/$MAXIMA_VERSION-source/$MAXIMA_TAR_FILE
+MAXIMA_URL=https://downloads.sourceforge.net/project/maxima/Maxima-source/$MAXIMA_VERSION-source/$MAXIMA_TAR_FILE
 
 if [ ! -f $MAXIMA_TAR_PATH ]
 then
     echo $MAXIMA_URL
-    curl -o $MAXIMA_TAR_PATH $MAXIMA_URL
+    curl -L -o $MAXIMA_TAR_PATH $MAXIMA_URL
 fi
 
 if [ ! -d $MAXIMA_PATH ]
@@ -289,6 +289,11 @@ quicklisp.  We do that by using the following script:
 #+begin_src sh
 ./scripts/fetch-quicklisp-libs
 #+end_src
+
+This script has to bootstrap something in ASDF that loads Common Lisp code.
+Because of this, this command may fail.  In that case, we can try another time
+as ASDF then may have been bootstrapped.  Possibly, the script has to run an
+additional time.
 
 #+header: :comments link :eval no
 #+header: :shebang "#!/bin/sh" :exports none
