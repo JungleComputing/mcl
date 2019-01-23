@@ -1137,7 +1137,9 @@ fermi void f(const int n, global float[n] a) {
 
 #+begin_src lisp
 (defun do-translation-file (file-name-input target)
-  (do-translation (parse-mcpl-file file-name-input) target))
+  (let ((dir (mcl-util:getenv "MCL_ROOT_DIR")))
+    (do-translation (parse-mcpl-file
+		     (format nil "~a/~a" dir file-name-input)) target)))
 
 (defun do-translation-string (string target)
   (do-translation (parse-mcpl string) target))
