@@ -412,6 +412,7 @@ The backward pass does nothing:
 	     (constant-p (second (params g)))))))
 
 (test hardware-variables
+  (load-hardware-descriptions:load-hardware-description "perfect")
   (let* ((input "package m;
                   module a;
 
