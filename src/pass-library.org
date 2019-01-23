@@ -337,9 +337,10 @@ Likewise, it is possible to retrieve the key from a filename, given pass-data:
 (defun get-key-from-filename (filename pass-data)
   (let ((root-name (namestring (root-directory pass-data))))
     (if (string= root-name "")
-        (remove-extension filename)
-        (remove-extension (replace-all filename root-name "")))))
+        (remove-extensions filename)
+        (remove-extensions (replace-all filename root-name "")))))
 
-(defun remove-extension (filename)
-  (subseq filename 0 (- (length filename) 4)))
+(defun remove-extensions (filename)
+  (values-list
+   (cl-ppcre:split "-" (subseq filename 0 (- (length filename) 4)))))
 #+end_src
