@@ -2,10 +2,9 @@ package matrixmultiplication;
 
 module matrixmultiplication;
 
-
+export matmul;
 
 import perfect;
-
 
 perfect void matmul(int n, int m, int p, 
 	float[n, m] c, 
