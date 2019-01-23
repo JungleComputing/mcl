@@ -259,6 +259,8 @@ variable.  The backward pass does nothing.
      nil)
     ((typep (parent var) 'dot-var)
      nil)
+    ((typep (parent var) 'as-stat)
+     nil)
     ((typep (parent var) 'inc)
      (set-read var))
     ((typep (parent var) 'inc-step)
