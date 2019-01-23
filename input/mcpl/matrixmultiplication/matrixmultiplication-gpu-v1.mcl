@@ -2,8 +2,9 @@ package matrixmultiplication;
 
 module matrixmultiplication;
 
-import gpu;
+export matmul;
 
+import gpu;
 
 gpu void matmul(const int n, const int m, const int p, float[n,m] c, const 
         float[n,p] a, const float[p,m] b) {
@@ -16,13 +17,13 @@ gpu void matmul(const int n, const int m, const int p, float[n,m] c, const
     
         foreach (const int bj in nrBlocksM blocks) {
         
-        	local float[p] l_a as float[nrLoadIters][nrThreadsM] l_a2;
-        	a as float[n, nrLoadIters][1, nrThreadsM] a2;
+	    local float[p] l_a as float[nrLoadIters][nrThreadsM] l_a2;
+	    a as float[n, nrLoadIters][1, nrThreadsM] a2;
         
             foreach (const int tj in nrThreadsM threads) {
             
             	for (int l = 0; l < nrLoadIters; l++) {
-            		l_a2[l][tj] = a2[i, l][0, tj];
+		    l_a2[l][tj] = a2[i, l][0, tj];
             	}
             	
             	barrier(local);

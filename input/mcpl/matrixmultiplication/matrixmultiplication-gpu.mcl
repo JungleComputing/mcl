@@ -2,9 +2,10 @@ package matrixmultiplication;
 
 module matrixmultiplication;
 
+export matmul;
+
 import perfect;
 import gpu;
-
 
 gpu void matmul(const int n, const int m, const int p, float[n,m] c, const 
         float[n,p] a, const float[p,m] b) {
