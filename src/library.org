@@ -2847,6 +2847,9 @@ The following method returns a string as it will not be clear if an
 (defmethod hardware-description-var-p ((var dot-var))
   (get-hardware-description (id (basic-var var))))
 
+(defmethod hardware-description-var-p ((var normal-var))
+  nil)
+
 (defgeneric resolve-hardware-description-var (var)
   (:documentation "Resolve a hardware description variable."))
 
@@ -2872,7 +2875,7 @@ The following method returns a string as it will not be clear if an
   (:documentation "Convert an HDL expression to an MCPL expression."))
 
 (defmethod hdl-expr->mcpl-expr ((unit-expr unit-expr))
-  (assert (null (unit unit-expr)))
+  ;;(assert (null (unit unit-expr)))
   (hdl-expr->mcpl-expr (ast-hdl:expr unit-expr)))
 
 (defmethod hdl-expr->mcpl-expr ((int-literal int-literal))

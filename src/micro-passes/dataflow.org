@@ -314,7 +314,7 @@ block, we record which *may-aliases* are known.
 #+begin_src lisp
 (defpackage :aliases
   (:use :cl :cl-graph :simple-sets :ast :ast-mcpl :dataflow :controlflow
-        :check-types :print-pretty :print-bb :print-dataflow)
+	:query-hdl-mcpl :check-types :print-pretty :print-bb :print-dataflow)
   (:import-from :alexandria :compose)
   (:import-from :utility-directory :filter)
   (:shadowing-import-from :simple-sets :union :intersection :set-difference)
@@ -599,7 +599,9 @@ primitive, we either add a tile or an alias to the set:
     (when (typep expr 'var-expr)
       (let ((type-var (get-type var))
 	    (type-expr (eval-type expr)))
-	(cond ((and (primitive-type-p type-var)
+	(cond ((hardware-description-var-p (var expr))
+	       nil)
+	      ((and (primitive-type-p type-var)
 		    (primitive-type-p type-expr))
 	       nil)
  	      ((tile-expr-p expr)

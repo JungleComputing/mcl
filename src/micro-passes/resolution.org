@@ -87,7 +87,7 @@ number of arguments in calls and in functions.  This is checked in the
 #+begin_src lisp
 (defpackage :set-vars-written
   (:use :cl :string-case :cl-graph :logging :errors :ast :ast-mcpl :callgraph
-	:aliases)
+	:aliases :query-hdl-mcpl)
   (:export :set-vars-written))
 #+end_src
 
@@ -295,10 +295,11 @@ variable.  The backward pass does nothing.
     ("divide_up" (set-read var))))
 
 (defun set-read (var)
-  (let ((alias-decls (cons (get-decl-var var) (get-decls-aliased-to-var
-                                                var))))
-    (dolist (d alias-decls)
-      (setf (loaded d) t))))
+  (unless (hardware-description-var-p var)
+    (let ((alias-decls (cons (get-decl-var var) (get-decls-aliased-to-var
+                                                 var))))
+      (dolist (d alias-decls)
+	(setf (loaded d) t)))))
 #+end_src
 
 
@@ -407,6 +408,21 @@ The backward pass does nothing:
     (set-vars-written (set-callgraph funcs))
     (is (and (written (first (params g)))
 	     (constant-p (second (params g)))))))
+
+(test hardware-variables
+  (let* ((input "package m;
+                  module a;
+
+                  perfect void f(int a) {
+                      a = perfect.ic.latency;
+                  }
+")
+	 (module (get-module input))
+	 (funcs (funcs (code module)))
+	 (f (first funcs)))
+    (set-vars-written (set-callgraph funcs))
+    (is (written (first (params f))))))
+
 
 (defun get-module (input)
   (let ((module (parse-mcpl input)))
