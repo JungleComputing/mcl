@@ -13,9 +13,8 @@ We use ~use-package~ to install Emacs packages in a modular and reliable way.
 (eval-and-compile
   (package-initialize)
   (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			   ("marmalade" . "http://marmalade-repo.org/packages/")
 			   ("org" . "http://orgmode.org/elpa/")
-			   ("melpa" . "http://melpa.milkbox.net/packages/")))
+			   ("melpa" . "http://stable.melpa.org/packages/")))
 
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
