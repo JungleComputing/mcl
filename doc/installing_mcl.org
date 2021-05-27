@@ -308,6 +308,11 @@ quicklisp.  We do that by using the following script:
 ./scripts/fetch-quicklisp-libs
 #+end_src
 
+It may be necessary to repeat this script multiple times because the
+script updates a package that is responsible for fetching the
+packages.  Because of this, an early iteration may not have the right
+capabilities yet to fetch the packages.
+
 #+header: :comments link :eval no
 #+header: :shebang "#!/bin/bash" :exports none
 #+begin_src sh :tangle "../scripts/fetch-quicklisp-libs"
