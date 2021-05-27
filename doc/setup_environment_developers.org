@@ -127,14 +127,15 @@ can try this out in the actual REPL.  Stop it with ~C-c C-c~ and then ABORT.
 
 The REPL we are using is called Slime and can be started with: ~M-x slime~.
 From this we can insert lisp expressions such as ~(+ 2 2)~ that will be
-evaluated and printed.  Inside the Slime buffer the ~,~ can be used to execute
+evaluated and printed.  Inside the Slime buffer the "~,~" can be used to execute
 commands for Slime itself.  For example, we can change the directory of the
 Slime process with ~, cd~.  We can also use it to load MCL: ~, load-system
 <ENTER> mcl~ (autocomplete should work).  MCL will be compiled.
 
-When finished, we can execute the MCL tests.  The tests have to be executed
-from ~$MCL_ROOT_DIR~, so we can go there with ~, cd~.  We can then evaluate the
-lisp expression: ~(test-mcl:test-mcl)~, autocomplete should work as well.  This
+When finished, we can load and execute the MCL tests.  The tests have to be
+executed from ~$MCL_ROOT_DIR~, so we can go there with ~, cd~.  We load the
+tests with ~, load-system <ENTER> mcl/tests~ We can then evaluate the lisp
+expression: ~(test-mcl:test-mcl)~, autocomplete should work as well.  This
 executes the function ~test-mcl~ in package ~test-mcl~.
 
 By default, the REPL starts in package ~cl-user~, but we can change that to
@@ -234,7 +235,7 @@ So, if we run in package ~:mcl~ (in Slime ~, in mcl~):
 We can see that pass /translate/ is being executed before pass /flatten-types/.
 Suppose, we want to inspect the AST just before /flatten-types/ is executed, we
 could go to the file ~src/passes.org~, move to section /Flatten types/, move
-into the first source block, open it with ~C-c '~, add a ~(break)~ expression
+into the second source block, open it with ~C-c '~, add a ~(break)~ expression
 in the function ~flatten-module~, and compile it with ~C-c C-c~.
 
 We run the same expression again (with ~M-p~, we get the previous expression):
@@ -279,7 +280,9 @@ In the case of function ~flatten-module~ this is not possible because we
 compiled it in a buffer that is disconnected from the source file.  However, in
 functions that are compiled from the tangled lisp files, we can jump back to
 the originating source.  For example, if we run the following expression again,
-we end up in the debugger again, because of the ~(break)~ statement.
+we end up in the debugger again, because of the ~(break)~ statement.  If you
+entered stepping before, you may need to press ~0~ to continue execution to the
+break statement.
 
 #+begin_src lisp
 (flatten "input/mcpl/matrixmultiplication/matrixmultiplication.mcl" "gpu")
@@ -287,7 +290,46 @@ we end up in the debugger again, because of the ~(break)~ statement.
 
 We cannot move to ~flatten-module~.  However, if we move to frame 1 below
 and move to ~(passes:do-flatten-types)~ and press ~M-.~, we move to the lisp
+
 file that was tangled from the ~.org~ file.  This file is read-only and should
 not be edited.  With the command ~C-c j~ we jump back to the ~.org~ file where
-~do-flatten-types~ was defined, and native buffer is opened immediately where
+~do-flatten-types~ was defined, and a native buffer is opened immediately where
 we can edit the function.  We can close the buffer again with ~C-c '~.  
+
+
+** Overview of commands
+
+   In this section we summarize the used commands and the context in which they
+   apply.  The context /emacs/ is simply anywhere in Emacs.
+
+   | command       | context                 | function                                            |
+   |---------------+-------------------------+-----------------------------------------------------|
+   | C-x C-c       | emacs                   | close emacs                                         |
+   | C-x C-f       | emacs                   | open ido-mode                                       |
+   | C-x C-f       | ido-mode                | open emacs default file browser                     |
+   | C-d           | ido-mode                | see the listing of a directory                      |
+   | C-x g         | emacs                   | open magit                                          |
+   | ?             | magit                   | overview of commands                                |
+   | q             | magit                   | quit magit                                          |
+   | C-x slime     | emacs                   | Open the Slime REPL                                 |
+   | , cd          | slime                   | change the working directory                        |
+   | , load-system | slime                   | load a system                                       |
+   | , in          | slime                   | change the package                                  |
+   | M-p           | slime                   | go to the previous expression                       |
+   | C-c '         | org-mode                | open/close a source block in a native buffer        |
+   | src<TAB>      | org-mode                | create a Lisp source block                          |
+   | split<TAB>    | org-mode                | split an existing Lisp source block                 |
+   | package<TAB>  | org-mode                | create a Lisp source block for a package            |
+   | C-c h a a     | org-mode                | define a property list for tangling and the package |
+   | C-c h a t     | org-mode                | define a property list for tangling                 |
+   | C-c h a p     | org-mode                | define a property list for the package              |
+   | C-c C-c       | lisp-mode               | compile a function                                  |
+   | s             | Slime debugger          | step through execution                              |
+   | a             | Slime debugger          | abort execution                                     |
+   | <ENTER>       | on an SLDB presentation | inspect a data structure                            |
+   | C-c v <TAB>   | on an SLDB presentation | inspect a data structure (in the REPL)              |
+   | M-<ENTER>     | on an SLDB presentation | add the presentation to the REPL                    |
+   | l             | slime inspector         | walk back through the data structure                |
+   | q             | slime inspector         | quit the slime inspector                            |
+   | M-.           | on a lisp expression    | move to the definition of the variable/function     |
+   | C-c j         | in a tangled Lisp file  | move to the code block in the original org file     |
