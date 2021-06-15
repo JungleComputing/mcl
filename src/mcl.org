@@ -185,15 +185,15 @@ The version:
 #+end_src
 
 #+begin_src lisp
-(defun generate-code (mcl-file-name target entry-funcs output-dir)
+(defun generate-code (mcl-file-name output-target hardware-target entry-funcs output-dir)
   (run-pass 'generate-code (list (cons 'semantic-analysis mcl-file-name)
-				 (cons 'translate target)
+				 (cons 'translate hardware-target)
 				 (cons 'generate-code
-				       (list "cpp-opencl" target entry-funcs
+				       (list output-target hardware-target entry-funcs
                                              output-dir)))))
 
 (defun gen ()
-  (generate-code "input/mcpl/vectoradd/vectoradd.mcl" "fermi" (list "vectoradd")
+  (generate-code "input/mcpl/vectoradd/vectoradd.mcl" "cpp-cuda" "fermi" (list "vectoradd")
                  (mcl-util:getenv "MCL_OUTPUT_DIR")))
 
 
