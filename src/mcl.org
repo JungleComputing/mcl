@@ -189,7 +189,7 @@ The version:
   (run-pass 'generate-code (list (cons 'semantic-analysis mcl-file-name)
 				 (cons 'translate target)
 				 (cons 'generate-code
-				       (list "cpp" target entry-funcs
+				       (list "cpp-opencl" target entry-funcs
                                              output-dir)))))
 
 (defun gen ()
