@@ -1456,7 +1456,7 @@ code-generation information.
 
 #+begin_src lisp
 (defun create-cpp-cuda-generator (module codegen-info entry-funcs output-dir
-                             callgraph)
+				  callgraph)
   (let ((module-dir (get-dir module))
 	(name-module (name (id module))))
     (make-cpp-cuda-generator
@@ -1502,8 +1502,6 @@ functions with multiple memory-spaces.
 	(format header "#include <iostream>~%")
 	(format header "#include <exception>~%~%")
 	(format header "#include \"io_data.h\"~%")
-	(format header "#include \"OpenCL.h\"~%~%")
-	(format header "#include <CL/cl.hpp>~%~%")
 	(format header "~a~%~%" (create-import-includes imports gen))
 	(format header "~%~%#include \"~a.h\"~%~%~%" (create-header module))))))
 
@@ -1638,7 +1636,7 @@ Functions:
 	    (gen id gen)
 	    (gen-params params gen)
 	    (if (and (member (name id) (entry-funcs gen) :test #'string=))
-		(gen-entry-code-block code-block gen)
+		(gen-entry-code-block-cuda code-block params gen)
 		(gen code-block gen))))))
 #+end_src
 
@@ -1675,24 +1673,25 @@ The following function places this wrapper code only if the function is the
 entry-point:
 
 #+begin_src lisp
-(defun gen-entry-code-block (cb gen)
+
+
+(defun gen-entry-code-block-cuda (cb params gen)
   (with-slots (stats) cb
     (with-slots (kernels-file codegen-info) gen
-      (emit "{"
-	    "    vector<std::string> macros;"
-	    "    try {"
-	    "        opencl::compile(\"~a/~a\", macros, ~a);" 
-	    (module-dir kernels-file) (base-filename kernels-file) (getf codegen-info :device-type)
-	    ""
-	    "        ~a" (gen stats gen)
-	    "        opencl::sync();"
-	    "    }"
-	    "    catch (cl::Error &err) {"
-	    "        std::cerr << \"ERROR: \" << err.what() << \" (\" <<"
-	    "        opencl::resolveErrorCode(err.err()) \<\< \")\" \<\< std::endl;"
-	    "        throw std::exception();"
-	    "    }"
-	    "}"))))
+      (let ((params-to-transform (remove-if-not #'array-type-param-p params)))
+	(break)
+	(emit "{"
+	      "    try {"
+	      ""
+	      "        ~a" (gen stats gen)
+	      "        opencl::sync();"
+	      "    }"
+	      "    catch (cl::Error &err) {"
+	      "        std::cerr << \"ERROR: \" << err.what() << \" (\" <<"
+	      "        opencl::resolveErrorCode(err.err()) \<\< \")\" \<\< std::endl;"
+	      "        throw std::exception();"
+	      "    }"
+	      "}")))))
 #+end_src
 
 
@@ -1794,7 +1793,7 @@ Calls:
 Generating an allocate:
 
 #+begin_src lisp
-(defun gen-allocate/transfer (params allocate/transfer gen)
+(defun gen-allocate/transfer-cuda (params allocate/transfer gen)
   (assert (eql (length params) 1))
   (let ((param (first params)))
     (emit "opencl::~a(~a, ~a, ~a)"

@@ -712,6 +712,8 @@ good way, we use quicklisp to do that using ~asdf-system-connections~.
 				:depends-on ("packages"))
 			 (:file "gen-cpp-opencl"
 				:depends-on ("packages"))
+			 (:file "gen-cpp-cuda"
+				:depends-on ("packages"))
 			 (:file "gen-opencl"
 				:depends-on ("packages"))
 			 (:file "generators" :depends-on ("packages"))
